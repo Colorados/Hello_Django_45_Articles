@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 
 
 class Article(models.Model):
@@ -14,3 +15,11 @@ class Article(models.Model):
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
+        
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'author', 'created_at']
+    list_filter = ['author']
+    search_fields = ['title', 'text']
+    fields = ['title', 'author', 'text', 'created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at']
+
