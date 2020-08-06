@@ -1,0 +1,104 @@
+[
+{
+  "model": "webapp.article",
+  "pk": 1,
+  "fields": {
+    "title": "Some title",
+    "text": "Some form of text",
+    "author": "Vasya",
+    "status": "new",
+    "created_at": "2020-08-01T03:38:43.011Z",
+    "updated_at": "2020-08-01T03:38:43.011Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 2,
+  "fields": {
+    "title": "qweqwe",
+    "text": "qweqwe",
+    "author": "qweqwe",
+    "status": "moderated",
+    "created_at": "2020-08-01T04:18:06.051Z",
+    "updated_at": "2020-08-01T04:18:06.051Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 3,
+  "fields": {
+    "title": "qwe",
+    "text": "qwe",
+    "author": "qwe",
+    "status": "new",
+    "created_at": "2020-08-01T10:21:47.012Z",
+    "updated_at": "2020-08-01T10:21:47.012Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 4,
+  "fields": {
+    "title": "TITLE",
+    "text": "some text",
+    "author": "some author",
+    "status": "moderated",
+    "created_at": "2020-08-05T13:57:07.685Z",
+    "updated_at": "2020-08-05T13:57:07.685Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 5,
+  "fields": {
+    "title": "oouou",
+    "text": "ooioiu",
+    "author": "oiuoiuoiu",
+    "status": "rejected",
+    "created_at": "2020-08-05T13:58:08.841Z",
+    "updated_at": "2020-08-05T13:58:08.841Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 6,
+  "fields": {
+    "title": "qewewq",
+    "text": "qweqwe",
+    "author": "eqwqewe",
+    "status": "new",
+    "created_at": "2020-08-06T02:01:59.267Z",
+    "updated_at": "2020-08-06T02:01:59.267Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 7,
+  "fields": {
+    "title": "some article title",
+    "text": "text for article",
+    "author": "article's author",
+    "status": "moderated",
+    "created_at": "2020-08-06T04:37:58.164Z",
+    "updated_at": "2020-08-06T04:37:58.164Z"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$QVts8y19LRTZ$kLIdEoMccRZg9qFi1BsNcdYGM4pZsGAtWi+EGq5Dsw0=",
+    "last_login": "2020-08-06T02:02:12.725Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "Admin",
+    "last_name": "Adminson",
+    "email": "someemail@some.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2020-07-31T15:34:41Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
