@@ -46,3 +46,7 @@ body {
     color: #ffc122;
     text-decoration: underline;
 }
+
+.pre {
+    white-space: pre;
+}
