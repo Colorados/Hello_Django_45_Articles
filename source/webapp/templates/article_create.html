@@ -7,27 +7,46 @@
     <form action="{% url 'article_create' %}" method="post">
         {% csrf_token %}
 
-        <label>Title:</label><br/>
-        <input type="text" name="title"/><br/>
+{#        {{ form.as_p }}#}
+{#        {{ form.as_table }}#}
+{#        {{ form.as_ul }}#}
 
-        <label>Text:</label><br/>
-        <textarea name="text"></textarea><br/>
+{#        {% for field in form %}#}
+{#            {% include 'partial/form_field.html' %}#}
+{#        {% endfor %}#}
 
-        <label>Author:</label><br/>
-        <input type="text" name="author"/><br/>
-        <br/>
+        {% include 'partial/form_field.html' with field=form.title %}
+        {% include 'partial/form_field.html' with field=form.text %}
+        {% include 'partial/form_field.html' with field=form.author %}
+        {% include 'partial/form_field.html' with field=form.status %}
 
-        <label form="id-status">Status:</label><br/>
-        <select name="status" id="id-status">
-        {# Вариант №1: обратиться по индексам к каждой паре#}
-    {#        {% for choice in status_choices %}#}
-    {#            <option value=""></option>#}
-    {#        {% endfor %}#}
-        {# Вариант №2: распаковать #}
-            {% for value, choice in status_choices %}
-                <option value="{{ value }}">{{ choice }}</option>
-            {% endfor %}
-        </select><br/>
+{#        <label for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label><br/>#}
+{#        {{ form.title }}<br/>#}
+{#        {% for error in form.title.errors %}#}
+{#            <p class="error">{{ error }}</p>#}
+{#        {% endfor %}#}
+{##}
+{#        <label>Title:</label><br/>#}
+{#        <input type="text" name="title"/><br/>#}
+{##}
+{#        <label for="{{ form.text.id_for_label }}">{{ form.text.label }}:</label><br/>#}
+{#        {{ form.text }}<br/>#}
+{#        {% for error in form.text.errors %}#}
+{#            <p class="error">{{ error }}</p>#}
+{#        {% endfor %}#}
+{##}
+{#        <label for="{{ form.author.id_for_label }}">{{ form.author.label }}:</label><br/>#}
+{#        {{ form.author }}<br/>#}
+{#        {% for error in form.author.errors %}#}
+{#            <p class="error">{{ error }}</p>#}
+{#        {% endfor %}#}
+{##}
+{#        <label for="{{ form.status.id_for_label }}">{{ form.status.label }}:</label><br/>#}
+{#        {{ form.status }}<br/>#}
+{#        {% for error in form.status.errors %}#}
+{#            <p class="error">{{ error }}</p>#}
+{#        {% endfor %}#}
+
         <br/>
         <input type="submit" value="Send"/>
     </form>
