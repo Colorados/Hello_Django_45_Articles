@@ -52,10 +52,20 @@ def article_update_view(request, pk):
         # article = get_object_or_404(Article, pk=pk)
         return render(request, "article_update.html", context={'status_choices': STATUS_CHOICES, 'article': article})
     elif request.method == "POST":
+        errors = {}
         article.title = request.POST.get('title')
+        if not article.title:
+            errors['title'] = 'Must be filled'
         article.text = request.POST.get('text')
+        if not article.text:
+            errors['text'] = 'Must be filled'
         article.author = request.POST.get('author')
+        if not article.author:
+            errors['author'] = 'Must be filled'
         article.status = request.POST.get('status')
+
+        if errors:
+            return render(request, "article_update.html", context={'status_choices': STATUS_CHOICES, 'article': article, 'errors': errors})
         article.save()
         return redirect('article_view', pk=article.pk)
     else:

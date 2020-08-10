@@ -50,3 +50,8 @@ body {
 .pre {
     white-space: pre;
 }
+.error {
+    margin-top: 0px;
+    font-size: 10px;
+    color: red;
+}
