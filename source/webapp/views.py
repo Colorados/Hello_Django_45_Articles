@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from webapp.models import Article, STATUS_CHOICES
-# from django.urls import reverse
 from django.http import HttpResponseNotAllowed
+from django.utils.timezone import make_naive
+from webapp.models import Article
 from webapp.forms import ArticleForm
+from .forms import BROWSER_DATETIME_FORMAT
 
 
 def index_view(request):
@@ -41,7 +42,8 @@ def article_create_view(request):
             article = Article.objects.create(title=form.cleaned_data['title'],
                                              text=form.cleaned_data['text'],
                                              author=form.cleaned_data['author'],
-                                             status=form.cleaned_data['status'])
+                                             status=form.cleaned_data['status'],
+                                             published=form.cleaned_data['published'])
             return redirect('article_view', pk=article.pk)
         else:
             return render(request, "article_create.html", context={'form': form})
@@ -55,7 +57,8 @@ def article_update_view(request, pk):
         form = ArticleForm(initial={'title': article.title,
                                     'text': article.text,
                                     'author': article.author,
-                                    'status': article.status})
+                                    'status': article.status,
+                                    'published': make_naive(article.published).strftime(BROWSER_DATETIME_FORMAT)})
         return render(request, "article_update.html", context={'form': form,
                                                                'article': article})
     elif request.method == "POST":
@@ -65,6 +68,7 @@ def article_update_view(request, pk):
             article.text = form.cleaned_data['text']
             article.author = form.cleaned_data['author']
             article.status = form.cleaned_data['status']
+            article.published = form.cleaned_data['published']
             article.save()
             return redirect('article_view', pk=article.pk)
         else:
