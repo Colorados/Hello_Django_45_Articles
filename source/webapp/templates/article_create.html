@@ -4,9 +4,10 @@
 
 {% block content %}
     <h1>Create Article</h1>
-    <form action="{% url 'article_create' %}" method="post">
-        {% csrf_token %}
-
+    {% url 'article_create' as action_url %}
+    {% include 'partial/form.html' with action_url=action_url form_method='post' %}
+{% endblock %}
+{#<form>#}
 {#        {{ form.as_p }}#}
 {#        {{ form.as_table }}#}
 {#        {{ form.as_ul }}#}
@@ -15,10 +16,10 @@
 {#            {% include 'partial/form_field.html' %}#}
 {#        {% endfor %}#}
 
-        {% include 'partial/form_field.html' with field=form.title %}
-        {% include 'partial/form_field.html' with field=form.text %}
-        {% include 'partial/form_field.html' with field=form.author %}
-        {% include 'partial/form_field.html' with field=form.status %}
+{#        {% include 'partial/form_field.html' with field=form.title %}#}
+{#        {% include 'partial/form_field.html' with field=form.text %}#}
+{#        {% include 'partial/form_field.html' with field=form.author %}#}
+{#        {% include 'partial/form_field.html' with field=form.status %}#}
 
 {#        <label for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label><br/>#}
 {#        {{ form.title }}<br/>#}
@@ -46,8 +47,4 @@
 {#        {% for error in form.status.errors %}#}
 {#            <p class="error">{{ error }}</p>#}
 {#        {% endfor %}#}
-
-        <br/>
-        <input type="submit" value="Send"/>
-    </form>
-{% endblock %}
+{#</form>#}
