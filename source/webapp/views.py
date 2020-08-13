@@ -1,81 +1,80 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotAllowed
 from django.utils.timezone import make_naive
+from django.views.generic import View, TemplateView
 from webapp.models import Article
 from webapp.forms import ArticleForm
 from .forms import BROWSER_DATETIME_FORMAT
 
 
-def index_view(request):
-    is_admin = request.GET.get('is_admin', None)
-    if is_admin:
-        data = Article.objects.all()
-    else:
-        data = Article.objects.filter(status='moderated')
-    return render(request, 'index.html', context={
-        'articles': data
-    })
+class IndexView(View):
+    def get(self, request):
+        is_admin = request.GET.get('is_admin', None)
+        if is_admin:
+            data = Article.objects.all()
+        else:
+            data = Article.objects.filter(status='moderated')
+        return render(request, 'index.html', context={
+            'articles': data
+        })
 
 
-def article_view(request, pk):
-    # article = Article.objects.filter(pk=article_id)
-    # if len(article) == 0:
-    #     raise Http404
+class ArticleView(TemplateView):
+    template_name = 'article_view.html'
 
-    # try:
-    #     article = Article.objects.get(pk=article_id)
-    # except Article.DoesNotExist:
-    #     raise Http404
-    article = get_object_or_404(Article, pk=pk)
-    context = {'article': article}
-    return render(request, 'article_view.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        article = get_object_or_404(Article, pk=pk)
+        context['article'] = article
+        return context
 
 
-def article_create_view(request):
-    if request.method == "GET":
+class ArticleCreateView(View):
+    def get(self, request):
         form = ArticleForm()
         return render(request, "article_create.html", context={'form': form})
-    elif request.method == "POST":
+
+    def post(self, request):
         form = ArticleForm(data=request.POST)
         if form.is_valid():
-            # article = Article.objects.create(**form.cleaned_data)
-            article = Article.objects.create(title=form.cleaned_data['title'],
-                                             text=form.cleaned_data['text'],
-                                             author=form.cleaned_data['author'],
-                                             status=form.cleaned_data['status'],
-                                             published=form.cleaned_data['published'])
+            data = {}
+            for key, value in form.cleaned_data.items():
+                if value is not None:
+                    data[key] = value
+            article = Article.objects.create(**data)
             return redirect('article_view', pk=article.pk)
         else:
             return render(request, "article_create.html", context={'form': form})
-    else:
-        return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])
     
 
-def article_update_view(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if request.method == "GET":
-        form = ArticleForm(initial={'title': article.title,
-                                    'text': article.text,
-                                    'author': article.author,
-                                    'status': article.status,
-                                    'published': make_naive(article.published).strftime(BROWSER_DATETIME_FORMAT)})
-        return render(request, "article_update.html", context={'form': form,
-                                                               'article': article})
-    elif request.method == "POST":
+class ArticleUpdateView(TemplateView):
+    template_name = 'article_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        article = get_object_or_404(Article, pk=pk)
+        initial = {}
+        for key in 'title', 'text', 'author', 'status':
+            initial[key] = getattr(article, key)
+        initial['published'] = make_naive(article.published).strftime(BROWSER_DATETIME_FORMAT)
+        form = ArticleForm(initial=initial)
+        context['article'] = article
+        context['form'] = form
+        return context
+
+    def post(self, request, pk):
+        article = get_object_or_404(Article, pk=pk)
         form = ArticleForm(data=request.POST)
         if form.is_valid():
-            article.title = form.cleaned_data['title']
-            article.text = form.cleaned_data['text']
-            article.author = form.cleaned_data['author']
-            article.status = form.cleaned_data['status']
-            article.published = form.cleaned_data['published']
+            for key, value in form.cleaned_data.items():
+                if value is not None:
+                    setattr(article, key, value)
             article.save()
             return redirect('article_view', pk=article.pk)
         else:
-            return render(request, "article_update.html", context={'article': article,
-                                                                   'form': form})
-    else:
-        return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])
+            return self.render_to_response(context={'article': article, 'form': form})
 
 
 def article_delete_view(request, pk):
