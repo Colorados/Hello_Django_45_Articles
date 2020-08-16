@@ -56,3 +56,24 @@ body {
     font-weight: bold;
     color: red;
 }
+
+.form-input {
+    border-radius: 5px;
+    border: solid 1px gray;
+    background: wheat;
+    padding: 3px 5px;
+}
+
+.form-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+}
+
+.form-error {
+    border: solid 1px crimson;
+    background: mintcream;
+}
+
+.star {
+    color: red;
+}
