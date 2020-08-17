@@ -14,6 +14,9 @@ class IndexView(View):
             data = Article.objects.all()
         else:
             data = Article.objects.filter(status='moderated')
+        search = request.GET.get('search')
+        if search:
+            data = data.filter(title__icontains=search)
         return render(request, 'index.html', context={
             'articles': data
         })

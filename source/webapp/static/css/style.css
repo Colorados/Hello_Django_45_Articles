@@ -77,3 +77,8 @@ body {
 .star {
     color: red;
 }
+
+.search {
+    display: inline-block;
+    float: right;
+}
