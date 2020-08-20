@@ -11,7 +11,7 @@ class Article(models.Model):
     text = models.TextField(max_length=3000, null=False, blank=False, verbose_name='Текст')
     author = models.CharField(max_length=40, null=False, blank=False, default='Unknown', verbose_name='Автор')
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='new', verbose_name='Статус')
-    tags = models.ManyToManyField('webapp.Tag', related_name='articles', through='webapp.ArticleTag', through_fields=('article', 'tag'), blank=True, verbose_name='Теги')
+    tags = models.ManyToManyField('webapp.Tag', related_name='articles', blank=True, verbose_name='Теги')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     published = models.DateTimeField(verbose_name='Время публикации', blank=True, default=timezone.now)
@@ -23,14 +23,6 @@ class Article(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
         
-
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'author', 'created_at']
-    list_filter = ['author']
-    search_fields = ['title', 'text']
-    fields = ['title', 'author', 'text', 'created_at', 'updated_at']
-    readonly_fields = ['created_at', 'updated_at']
-
 
 class Comment(models.Model):
     article = models.ForeignKey('webapp.Article', related_name='comments',
@@ -54,11 +46,3 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class ArticleTag(models.Model):
-    article = models.ForeignKey('webapp.Article', related_name='article_tags', on_delete=models.CASCADE, verbose_name='Статья')
-    tag = models.ForeignKey('webapp.Tag', related_name='tag_articles', on_delete=models.CASCADE, verbose_name='Тег')
-
-    def __str__(self):
-        return "{} | {}".format(self.article, self.tag)
