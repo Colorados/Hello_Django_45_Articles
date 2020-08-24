@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotAllowed
 from django.urls import reverse
 from django.utils.timezone import make_naive
-from django.views.generic import View, TemplateView
+from django.views.generic import View, TemplateView, FormView
+from .base_views import FormView as CustomFormView
 from webapp.models import Article
 from webapp.forms import ArticleForm
 from .forms import BROWSER_DATETIME_FORMAT
@@ -40,43 +41,54 @@ class ArticleCreateView(CustomFormView):
 
     def form_valid(self, form):
         data = {}
+        tags = form.cleaned_data.pop('tags')
         for key, value in form.cleaned_data.items():
             if value is not None:
                 data[key] = value
         self.article = Article.objects.create(**data)
+        self.article.tags.set(tags)
         return super().form_valid(form)
 
     def get_redirect_url(self):
         return reverse('article_view', kwargs={'pk': self.article.pk})
     
 
-class ArticleUpdateView(TemplateView):
+class ArticleUpdateView(FormView):
     template_name = 'article_update.html'
+    form_class = ArticleForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.article = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        pk = self.kwargs.get('pk')
-        article = get_object_or_404(Article, pk=pk)
-        initial = {}
-        for key in 'title', 'text', 'author', 'status':
-            initial[key] = getattr(article, key)
-        initial['published'] = make_naive(article.published).strftime(BROWSER_DATETIME_FORMAT)
-        form = ArticleForm(initial=initial)
-        context['article'] = article
-        context['form'] = form
+        context['article'] = self.article
         return context
 
-    def post(self, request, pk):
-        article = get_object_or_404(Article, pk=pk)
-        form = ArticleForm(data=request.POST)
-        if form.is_valid():
-            for key, value in form.cleaned_data.items():
-                if value is not None:
-                    setattr(article, key, value)
-            article.save()
-            return redirect('article_view', pk=article.pk)
-        else:
-            return self.render_to_response(context={'article': article, 'form': form})
+    def get_initial(self):
+        initial = {}
+        for key in 'title', 'text', 'author', 'status':
+            initial[key] = getattr(self.article, key)
+        initial['published'] = make_naive(self.article.published).strftime(BROWSER_DATETIME_FORMAT)
+        return initial
+
+    def form_valid(self, form):
+        tags = form.cleaned_data.pop('tags')
+        for key, value in form.cleaned_data.items():
+            if value is not None:
+                setattr(self.article, key, value)
+        self.article.save()
+        self.article.tags.set(tags)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('article_view', kwargs={'pk': self.article.pk})
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Article, pk=pk)
 
 
 def article_delete_view(request, pk):

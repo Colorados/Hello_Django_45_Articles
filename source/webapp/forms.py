@@ -1,6 +1,6 @@
 from django import forms
 from .models import STATUS_CHOICES
-from .models import Article
+from .models import Article, Tag
 
 default_status = STATUS_CHOICES[0][0]
 
@@ -16,6 +16,7 @@ class ArticleForm(forms.Form):
     published = forms.DateTimeField(required=False, label='Время публикации',
                                     input_formats=['%Y-%m-%d', BROWSER_DATETIME_FORMAT, '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S'],
                                     widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(),required=False, label='Теги', widget=forms.SelectMultiple)
 
 class CommentForm(forms.Form):
     article = forms.ModelChoiceField(queryset=Article.objects.all(), required=True, label='Статья')
